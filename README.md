@@ -1,2 +1,2 @@
 # aprendendo-bibliotecaJS
-entendendo conceitos de node.js
+aprofundando conceitos de node.js
