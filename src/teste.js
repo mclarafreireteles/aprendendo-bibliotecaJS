@@ -15,15 +15,13 @@ function trataErro(erro){
 
 //dentro dessa função vai existir código assincrono
 async function pegaArquivo(caminhoDoArquivo) {
-    const encoding = 'utf-8';
     try {
+      const encoding = 'utf-8';
       const texto = await fs.promises.readFile(caminhoDoArquivo, encoding)
       return extraiLinks(texto);
     } catch(erro) {
       trataErro(erro);
-    } finally {
-      console.log(chalk.yellow('operação concluída'));
-    }
+    } 
 }
 
 export default pegaArquivo;

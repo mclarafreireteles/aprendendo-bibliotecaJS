@@ -4,15 +4,22 @@ import pegaArquivo from './teste.js';
 
 const caminho = process.argv;
 
-pegaArquivo(caminho[2]);
-// console.log(caminho); // retorna um array c o caminho absoluto ate o executavel do node e ate esse codigo
+
 
 async function processaTexto(argumentos){
-    if (fs.linkSync(caminho).isFile()) {
+    const caminho = argumentos[2];
+
+    if (fs.lstatSync(caminho).isFile()) {
         const resultado = await pegaArquivo(argumentos[2]);
         console.log(chalk.yellow('lista de links: '), resultado);
-    } else if (fs.linkSync(caminho).isDirectory()) {
-        
+    } else if (fs.lstatSync(caminho).isDirectory()) {
+        const arquivos = await fs.promises.readdir(caminho);
+        arquivos.forEach(async(nomeDeArquivo) => {
+            const lista =  await pegaArquivo(`${caminho}/${nomeDeArquivo}`);
+            console.log(`${caminho}/${nomeDeArquivo}`)
+            console.log(lista);
+        })
+        console.log(arquivos);
     }
 }
 
