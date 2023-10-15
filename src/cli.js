@@ -4,10 +4,17 @@ import pegaArquivo from './teste.js';
 
 const caminho = process.argv;
 
-function imprimeLista(resultado, identificador = ''){
+// function imprimeLista(resultado, identificador = ''){
+//     console.log(
+//         chalk.blue(`Lista de links: ${chalk.black.bgGreenBright(identificador)} ${JSON.stringify(resultado)}`));
+// }
+
+function imprimeLista(resultado, identificador = '') {
     console.log(
-        chalk.blue(`Lista de links: ${chalk.black.bgGreenBright(identificador)} ${JSON.stringify(resultado)}`));
-}
+      chalk.yellow('lista de links'),
+      chalk.black.bgGreen(identificador),
+      resultado);
+  }
 
 async function processaTexto(argumentos){
     const caminho = argumentos[2];
