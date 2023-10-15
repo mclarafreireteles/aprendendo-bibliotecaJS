@@ -1,44 +1,48 @@
 import chalk from 'chalk';
 import fs from 'fs';
 import pegaArquivo from './teste.js';
+import listaValidada from './http-validacao.js';
 
 const caminho = process.argv;
 
-// function imprimeLista(resultado, identificador = ''){
-//     console.log(
-//         chalk.blue(`Lista de links: ${chalk.black.bgGreenBright(identificador)} ${JSON.stringify(resultado)}`));
-// }
-
-function imprimeLista(resultado, identificador = '') {
+async function imprimeLista(valida, resultado, identificador = '') {
+  if (valida) {
+    console.log(
+      chalk.yellow('lista validada'),
+      chalk.black.bgGreen(identificador),
+      await listaValidada(resultado));    
+  } else {
     console.log(
       chalk.yellow('lista de links'),
       chalk.black.bgGreen(identificador),
       resultado);
   }
+}
 
-async function processaTexto(argumentos){
-    const caminho = argumentos[2];
 
-    try {
-        fs.lstatSync(caminho);  
-    } catch (erro) {
-        if (erro.code == 'ENOENT'){
-            console.log(chalk.red('arquivo ou diretório não existe'))
-            return;
-        }
+async function processaTexto(argumentos) {
+  const caminho = argumentos[2];
+  const valida = argumentos[3] === '--valida';
+
+  try {
+    fs.lstatSync(caminho);
+  } catch (erro) {
+    if (erro.code === 'ENOENT') {
+      console.log('arquivo ou diretório não existe');
+      return;
     }
+  }
 
-    if (fs.lstatSync(caminho).isFile()) {
-        const resultado = await pegaArquivo(argumentos[2]);
-        imprimeLista(resultado);
-    } else if (fs.lstatSync(caminho).isDirectory()) {
-        const arquivos = await fs.promises.readdir(caminho);
-        arquivos.forEach(async(nomeDeArquivo) => {
-            const lista =  await pegaArquivo(`${caminho}/${nomeDeArquivo}`);
-            imprimeLista(lista, nomeDeArquivo);
-        })
-        console.log(arquivos);
-    }
+  if (fs.lstatSync(caminho).isFile()) {
+    const resultado = await pegaArquivo(argumentos[2]);
+    imprimeLista(valida, resultado);
+  } else if (fs.lstatSync(caminho).isDirectory()) {
+    const arquivos = await fs.promises.readdir(caminho)
+    arquivos.forEach(async (nomeDeArquivo) => {
+      const lista = await pegaArquivo(`${caminho}/${nomeDeArquivo}`)
+      imprimeLista(valida, lista, nomeDeArquivo)
+    })
+  }
 }
 
 processaTexto(caminho);
